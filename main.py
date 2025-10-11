@@ -296,13 +296,13 @@ class AplicacionMC:
         n = self.num_datos.get()
         
         if n <= 0:
-            messagebox.showerror("❌ Error de Validación", 
-                               "El número de puntos debe ser mayor que 0.\n\n"
+            messagebox.showerror("Error de Validación", 
+                               "El número de puntos debe ser mayor que 1.\n\n"
                                "Por favor ingrese un valor válido (mínimo 2 puntos).")
             return
         
         if n == 1:
-            messagebox.showwarning("⚠️ Advertencia", 
+            messagebox.showwarning("Advertencia", 
                                  "Se requieren al menos 2 puntos para realizar el ajuste exponencial.\n\n"
                                  "Por favor ingrese 2 o más puntos.")
             return
