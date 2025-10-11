@@ -43,18 +43,15 @@ a₀·Σx + a₁·Σx² = Σ(x·Y)
 
 ### Paso 1: Clonar o Descargar
 ```bash
-# Si tienes git instalado
-git clone [URL_DEL_REPOSITORIO]
+git clone https://github.com/Haalfonso05/Modelo-Exponencial-.git
 
-# O descarga el archivo ZIP y extráelo
 ```
 
 ### Paso 2: Instalar Dependencias
 ```bash
-# Navegar al directorio del proyecto
+
 cd modelo_exponencial
 
-# Instalar las dependencias requeridas
 pip install -r requirements.txt
 ```
 
