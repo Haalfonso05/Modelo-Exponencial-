@@ -56,44 +56,44 @@ class AplicacionMC:
             'button_fg': '#ffffff',
             'frame_bg': '#ecf0f1'
         }
-        style.configure('TLabelFrame', 
+        style.configure('Modern.TLabelFrame', 
                        background=colors['frame_bg'],
                        relief='flat',
                        borderwidth=1)
         
-        style.configure('TButton',
+        style.configure('Modern.TButton',
                        background=colors['button_bg'],
                        foreground=colors['button_fg'],
                        borderwidth=0,
                        focuscolor='none',
                        padding=(10, 5))
         
-        style.map('TButton',
+        style.map('Modern.TButton',
                  background=[('active', '#2980b9'),
                            ('pressed', '#21618c')])
         
-        style.configure('TEntry',
+        style.configure('Modern.TEntry',
                        fieldbackground='white',
                        borderwidth=1,
                        relief='solid')
         
-        style.configure('Treeview',
+        style.configure('Modern.Treeview',
                        background='white',
                        foreground=colors['fg'],
                        rowheight=25,
                        fieldbackground='white')
         
-        style.configure('Treeview.Heading',
+        style.configure('Modern.Treeview.Heading',
                        background=colors['select_bg'],
                        foreground=colors['select_fg'],
                        relief='flat')
         
-        style.configure('TNotebook.Tab',
+        style.configure('Modern.TNotebook.Tab',
                        padding=[20, 10],
                        background=colors['frame_bg'],
                        foreground=colors['fg'])
         
-        style.map('TNotebook.Tab',
+        style.map('Modern.TNotebook.Tab',
                  background=[('selected', colors['select_bg']),
                            ('active', '#5dade2')],
                  foreground=[('selected', colors['select_fg']),
