@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+import math
 
 plt.style.use('seaborn-v0_8-darkgrid')
 
@@ -19,6 +20,8 @@ class AplicacionMC:
         self.num_datos = tk.IntVar()
         self.entries_x = []
         self.entries_y = []
+        self.fx_buttons_x = []
+        self.fx_buttons_y = []
         
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(pady=15, padx=15, expand=True, fill='both')
@@ -312,23 +315,194 @@ class AplicacionMC:
             widget.destroy()
         self.entries_x = []
         self.entries_y = []
+        self.fx_buttons_x = []
+        self.fx_buttons_y = []
         
         header_style = {'font': ('Segoe UI', 10, 'bold'), 'foreground': '#2c3e50'}
-        ttk.Label(self.frame_tabla, text="#", width=8, **header_style).grid(row=0, column=0, padx=8, pady=8)
-        ttk.Label(self.frame_tabla, text="X", width=18, **header_style).grid(row=0, column=1, padx=8, pady=8)
-        ttk.Label(self.frame_tabla, text="Y", width=18, **header_style).grid(row=0, column=2, padx=8, pady=8)
+        ttk.Label(self.frame_tabla, text="#", width=5, **header_style).grid(row=0, column=0, padx=5, pady=8)
+        ttk.Label(self.frame_tabla, text="X", width=15, **header_style).grid(row=0, column=1, padx=5, pady=8)
+        ttk.Label(self.frame_tabla, text="", width=3, **header_style).grid(row=0, column=2, padx=2, pady=8)
+        ttk.Label(self.frame_tabla, text="Y", width=15, **header_style).grid(row=0, column=3, padx=5, pady=8)
+        ttk.Label(self.frame_tabla, text="", width=3, **header_style).grid(row=0, column=4, padx=2, pady=8)
         
         for i in range(n):
             ttk.Label(self.frame_tabla, text=f"{i+1}", 
-                     font=('Segoe UI', 9)).grid(row=i+1, column=0, padx=8, pady=4)
+                     font=('Segoe UI', 9)).grid(row=i+1, column=0, padx=5, pady=4)
             
-            entry_x = ttk.Entry(self.frame_tabla, width=18, font=('Segoe UI', 9))
-            entry_x.grid(row=i+1, column=1, padx=8, pady=4)
+            # Campo X y botón fx
+            entry_x = ttk.Entry(self.frame_tabla, width=15, font=('Segoe UI', 9))
+            entry_x.grid(row=i+1, column=1, padx=5, pady=4)
             self.entries_x.append(entry_x)
             
-            entry_y = ttk.Entry(self.frame_tabla, width=18, font=('Segoe UI', 9))
-            entry_y.grid(row=i+1, column=2, padx=8, pady=4)
+            fx_btn_x = ttk.Button(self.frame_tabla, text="fx", width=3,
+                                  command=lambda idx=i, tipo='x': self.abrir_calculadora(idx, tipo))
+            fx_btn_x.grid(row=i+1, column=2, padx=2, pady=4)
+            self.fx_buttons_x.append(fx_btn_x)
+            
+            # Campo Y y botón fx
+            entry_y = ttk.Entry(self.frame_tabla, width=15, font=('Segoe UI', 9))
+            entry_y.grid(row=i+1, column=3, padx=5, pady=4)
             self.entries_y.append(entry_y)
+            
+            fx_btn_y = ttk.Button(self.frame_tabla, text="fx", width=3,
+                                  command=lambda idx=i, tipo='y': self.abrir_calculadora(idx, tipo))
+            fx_btn_y.grid(row=i+1, column=4, padx=2, pady=4)
+            self.fx_buttons_y.append(fx_btn_y)
+    
+    def abrir_calculadora(self, index, tipo):
+        """Abre el menú calculadora para el campo especificado"""
+        # Obtener el campo de entrada correspondiente
+        if tipo == 'x':
+            entry = self.entries_x[index]
+            button = self.fx_buttons_x[index]
+        else:
+            entry = self.entries_y[index]
+            button = self.fx_buttons_y[index]
+        
+        # Crear menú popup
+        menu = tk.Menu(self.root, tearoff=0, bg='white', font=('Segoe UI', 9))
+        
+        # Constantes matemáticas
+        menu.add_command(label="π (pi) = 3.14159...", 
+                        command=lambda: self.insertar_valor(entry, math.pi))
+        menu.add_command(label="e (euler) = 2.71828...", 
+                        command=lambda: self.insertar_valor(entry, math.e))
+        menu.add_command(label="φ (golden ratio) = 1.61803...", 
+                        command=lambda: self.insertar_valor(entry, (1 + math.sqrt(5))/2))
+        
+        menu.add_separator()
+        
+        # Raíces comunes
+        menu.add_command(label="√2 = 1.41421...", 
+                        command=lambda: self.insertar_valor(entry, math.sqrt(2)))
+        menu.add_command(label="√3 = 1.73205...", 
+                        command=lambda: self.insertar_valor(entry, math.sqrt(3)))
+        menu.add_command(label="√5 = 2.23606...", 
+                        command=lambda: self.insertar_valor(entry, math.sqrt(5)))
+        
+        menu.add_separator()
+        
+        # Funciones trigonométricas (para valores comunes)
+        submenu_trig = tk.Menu(menu, tearoff=0, bg='white', font=('Segoe UI', 9))
+        menu.add_cascade(label="Trigonométricas →", menu=submenu_trig)
+        
+        submenu_trig.add_command(label="sin(30°) = 0.5", 
+                                command=lambda: self.insertar_valor(entry, 0.5))
+        submenu_trig.add_command(label="sin(45°) = √2/2", 
+                                command=lambda: self.insertar_valor(entry, math.sqrt(2)/2))
+        submenu_trig.add_command(label="sin(60°) = √3/2", 
+                                command=lambda: self.insertar_valor(entry, math.sqrt(3)/2))
+        submenu_trig.add_command(label="cos(30°) = √3/2", 
+                                command=lambda: self.insertar_valor(entry, math.sqrt(3)/2))
+        submenu_trig.add_command(label="cos(45°) = √2/2", 
+                                command=lambda: self.insertar_valor(entry, math.sqrt(2)/2))
+        submenu_trig.add_command(label="cos(60°) = 0.5", 
+                                command=lambda: self.insertar_valor(entry, 0.5))
+        
+        menu.add_separator()
+        
+        # Calculadora personalizada
+        menu.add_command(label="🔢 Calculadora avanzada...", 
+                        command=lambda: self.abrir_calculadora_avanzada(entry))
+        
+        # Mostrar el menú en la posición del botón
+        menu.post(button.winfo_rootx(), button.winfo_rooty() + button.winfo_height())
+    
+    def insertar_valor(self, entry, valor):
+        """Inserta un valor en el campo de entrada especificado"""
+        entry.delete(0, tk.END)
+        entry.insert(0, str(valor))
+    
+    def abrir_calculadora_avanzada(self, entry):
+        """Abre una ventana de calculadora avanzada"""
+        calc_window = tk.Toplevel(self.root)
+        calc_window.title("🔢 Calculadora Científica")
+        calc_window.geometry("400x300")
+        calc_window.configure(bg='#f0f0f0')
+        
+        # Frame principal
+        main_frame = ttk.Frame(calc_window, padding=20)
+        main_frame.pack(fill='both', expand=True)
+        
+        # Título
+        ttk.Label(main_frame, text="Ingrese una expresión matemática:", 
+                 font=('Segoe UI', 10, 'bold')).pack(pady=(0, 10))
+        
+        # Campo de expresión
+        expr_frame = ttk.Frame(main_frame)
+        expr_frame.pack(fill='x', pady=10)
+        
+        expr_entry = ttk.Entry(expr_frame, font=('Consolas', 11), width=35)
+        expr_entry.pack(side='left', fill='x', expand=True, padx=(0, 10))
+        
+        # Resultado
+        result_label = ttk.Label(main_frame, text="Resultado: ", 
+                                font=('Segoe UI', 10), foreground='#2c3e50')
+        result_label.pack(pady=10)
+        
+        def evaluar():
+            try:
+                expresion = expr_entry.get()
+                # Reemplazar sintaxis común
+                expresion = expresion.replace('^', '**')
+                expresion = expresion.replace('pi', str(math.pi))
+                expresion = expresion.replace('e', str(math.e))
+                expresion = expresion.replace('sqrt', 'math.sqrt')
+                expresion = expresion.replace('sin', 'math.sin')
+                expresion = expresion.replace('cos', 'math.cos')
+                expresion = expresion.replace('tan', 'math.tan')
+                expresion = expresion.replace('ln', 'math.log')
+                expresion = expresion.replace('log', 'math.log10')
+                
+                resultado = eval(expresion)
+                result_label.config(text=f"Resultado: {resultado}")
+            except:
+                result_label.config(text="Error: Expresión inválida", foreground='red')
+        
+        def insertar():
+            try:
+                expresion = expr_entry.get()
+                # Reemplazar sintaxis común
+                expresion = expresion.replace('^', '**')
+                expresion = expresion.replace('pi', str(math.pi))
+                expresion = expresion.replace('e', str(math.e))
+                expresion = expresion.replace('sqrt', 'math.sqrt')
+                expresion = expresion.replace('sin', 'math.sin')
+                expresion = expresion.replace('cos', 'math.cos')
+                expresion = expresion.replace('tan', 'math.tan')
+                expresion = expresion.replace('ln', 'math.log')
+                expresion = expresion.replace('log', 'math.log10')
+                
+                resultado = eval(expresion)
+                self.insertar_valor(entry, resultado)
+                calc_window.destroy()
+            except:
+                messagebox.showerror("Error", "Expresión inválida")
+        
+        # Botón evaluar
+        eval_btn = ttk.Button(expr_frame, text="Evaluar", command=evaluar)
+        eval_btn.pack(side='right')
+        
+        # Frame de ayuda
+        help_frame = ttk.LabelFrame(main_frame, text="Sintaxis permitida:", padding=10)
+        help_frame.pack(fill='x', pady=10)
+        
+        help_text = """• Operaciones: +, -, *, /, ^ (potencia)
+• Constantes: pi, e
+• Funciones: sqrt(), sin(), cos(), tan(), ln(), log()
+• Ejemplos: 2*pi + sqrt(e), sin(45), 2^3 + sqrt(16)"""
+        
+        ttk.Label(help_frame, text=help_text, font=('Consolas', 9), 
+                 foreground='#555').pack()
+        
+        # Botones
+        button_frame = ttk.Frame(main_frame)
+        button_frame.pack(pady=10)
+        
+        ttk.Button(button_frame, text="Insertar Resultado", 
+                  command=insertar, style='Accent.TButton').pack(side='left', padx=5)
+        ttk.Button(button_frame, text="Cancelar", 
+                  command=calc_window.destroy).pack(side='left', padx=5)
     
     def obtener_datos(self):
         try:
@@ -535,6 +709,8 @@ a₁ = B (pendiente de la recta)
         
         self.entries_x = []
         self.entries_y = []
+        self.fx_buttons_x = []
+        self.fx_buttons_y = []
         self.num_datos.set(0)
 
 def main():
